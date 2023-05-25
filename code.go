@@ -140,7 +140,8 @@ func (f Factory) ToId(code string) int {
 		for _, i2 := range code[:len(code)-1] {
 			s, ok := m1[string(i2)]
 			if !ok {
-				panic("模版缺少了映射, " + code)
+				//panic("模版缺少了映射, " + code)
+				return 0
 			}
 			got += s
 		}
