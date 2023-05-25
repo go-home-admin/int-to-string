@@ -130,6 +130,9 @@ func (f Factory) Z(k1 string) string {
 // 3, code_temp根据M1反向映射得到number1
 // 4, number1 转0进制得到id
 func (f Factory) ToId(code string) int {
+	if code == "" {
+		return 0
+	}
 	k1 := strings.ToUpper(code[len(code)-1:])
 	m1 := f.config.mapContrary[k1]
 	z := f.Z(k1)
