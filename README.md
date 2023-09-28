@@ -15,9 +15,9 @@ config := server.BuildConfig() // 需要把这个配置保存起来
 // 重新启动, 加载生成的配置
 server = New(8, config)
 for i := 1; i < 1000000000; i++ {
-code := server.ToCode(i)
-if server.ToId(code) != i {
-t.Errorf("加密前(%v) 加密后(%v) 解析后(%v)", i, code, server.ToId(code))
-}
+    code := server.ToCode(i)
+    if server.ToId(code) != i {
+        t.Errorf("加密前(%v) 加密后(%v) 解析后(%v)", i, code, server.ToId(code))
+    }
 }
 ````
