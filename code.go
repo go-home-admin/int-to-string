@@ -3,7 +3,6 @@ package int_to_string
 import (
 	"crypto/md5"
 	"encoding/json"
-	"fmt"
 	"math"
 	"strconv"
 	"strings"
@@ -112,7 +111,7 @@ func (f Factory) ToCode(id int) string {
 		z := f.Z(k1)
 		got = z + got
 		m := md5.New().Sum([]byte(got))
-		got = Reverse(strings.ReplaceAll(strings.ToUpper(fmt.Sprintf("%x", m)), z, "")) + got
+		got = Reverse(strings.ReplaceAll(strings.ToUpper(string(m)), z, "")) + got
 		got = got[len(got)-f.len:]
 		got = strings.ToUpper(got)
 	}
