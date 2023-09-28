@@ -15,9 +15,9 @@ var words = []string{
 }
 
 type Config struct {
-	Words         []string       `json:"words"` // 自热排序到字母
-	wordsContrary map[string]int // words相反值
-	wordsLen      int
+	Words         []string                     `json:"words"` // 自热排序到字母
+	wordsContrary map[string]int               // words相反值
+	wordsLen      int                          // 模板长度
 	Map           map[string]map[string]string `json:"map"` // 自热排序到字母, 个数=len(Words), 第一位string 为个位数映射
 	mapContrary   map[string]map[string]string
 }
@@ -94,22 +94,25 @@ func (f Factory) BuildConfig() string {
 // 3, number1 根据M1 进行映射替换, k1单独使用words替换， 得到code_temp
 // 4, code_temp 如果长度不够，拼接(Z), 还不够拼接number1自身再截取， 得到code
 func (f Factory) ToCode(id int) string {
-	number1 := decimalToAny(id, f.config.wordsLen-1)
-	k2 := anyToDecimal(number1[len(number1)-1:], f.config.wordsLen-1)
+	number1 := decimalToAny(id, f.config.wordsLen-1)                  // 整个数字进行进制转换, 把数字内部字符映射
+	k2 := anyToDecimal(number1[len(number1)-1:], f.config.wordsLen-1) // 进制转换后, 最后一个转为 int
+	// 一位数字进制转换
 	k1 := f.config.Words[k2]
 	m1 := f.config.Map[k1]
 
+	// 除了最后一位, 其他数字直接按模板换算
 	got := ""
 	for _, i2 := range strings.ToUpper(number1[:len(number1)-1]) {
 		got += m1[string(i2)]
 	}
+	// 最后一位拼接, 它保存有长度信息
 	got += strings.ToUpper(k1)
 	if len(got) < f.len {
 		// 长度不足, 补足
 		z := f.Z(k1)
 		got = z + got
 		m := md5.New().Sum([]byte(got))
-		got = Reverse(strings.ReplaceAll(fmt.Sprintf("%x", m), z, "")) + got
+		got = Reverse(strings.ReplaceAll(strings.ToUpper(fmt.Sprintf("%x", m)), z, "")) + got
 		got = got[len(got)-f.len:]
 		got = strings.ToUpper(got)
 	}
